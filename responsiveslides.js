@@ -267,29 +267,29 @@
             restartCycle();
           });
         }
+        
+        $this.on('changeSlide',function(ev, idx) {
+          if (!settings.pauseControls) {
+            restartCycle();
+          }
 
+          // Break if element is already active or currently animated
+          if (index === idx || $("." + visibleClass).queue('fx').length) {
+            return;
+          }
+
+          // Remove active state from old tab and set new one
+          selectTab(idx);
+
+          // Do the animation
+          slideTo(idx);
+        });
+        
         // Pager click event handler
         if (settings.pager || settings.manualControls) {
-          $tabs.bind("click", function (e) {
+          $tabs.on("click", function (e) {
             e.preventDefault();
-
-            if (!settings.pauseControls) {
-              restartCycle();
-            }
-
-            // Get index of clicked tab
-            var idx = $tabs.index(this);
-
-            // Break if element is already active or currently animated
-            if (index === idx || $("." + visibleClass).queue('fx').length) {
-              return;
-            }
-
-            // Remove active state from old tab and set new one
-            selectTab(idx);
-
-            // Do the animation
-            slideTo(idx);
+            $this.trigger('changeSlide', $tabs.index(this));
           })
             .eq(0)
             .closest("li")
